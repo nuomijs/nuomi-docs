@@ -4,11 +4,9 @@ node_js:
 
 # 生成私钥
 before_install:
+- chmod 600 ~/.ssh/id_rsa
 - openssl aes-256-cbc -K $encrypted_5cab76ca3150_key -iv $encrypted_5cab76ca3150_iv
   -in id_rsa.enc -out ~/.ssh/id_rsa -d
-- chmod 600 ~/.ssh/id_rsa
-- eval $(ssh-agent)
-- ssh-add ~/.ssh/id_rsa
 
 # 运行脚本
 script: npm run deploy
