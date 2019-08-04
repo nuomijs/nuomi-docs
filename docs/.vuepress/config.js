@@ -9,9 +9,9 @@ module.exports = {
     nav: [
       { text: '指南', link: '/guide/' },
       { text: 'API', link: '/api/' },
-      { text: '更新日志', link: '/logs/' },
-      { text: 'Github', link: '/logs/' },
-      { text: '招聘', link: '/logs/' },
+      { text: '更新日志', link: 'https://github.com/nuomijs/nuomi/logs.md' },
+      { text: 'Github', link: 'https://github.com/nuomijs/nuomi' },
+      { text: '招聘', link: 'https://company.zhaopin.com/CZ620076330.htm' },
     ],
   },
 };
