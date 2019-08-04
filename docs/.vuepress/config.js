@@ -22,6 +22,8 @@ module.exports = {
     sidebar: {
       '/guide/': [
         ['', '指南'],
+        ['started', '快速入门'],
+        ['advanced', '高级用法'],
       ],
       '/api/': [
         ['', 'API'],
