@@ -7,4 +7,4 @@ nuomi是基于[react](https://react.docschina.org/)和[redux](https://cn.redux.j
 支持所有的现代浏览器和 IE9+，React 16.3+。
 
 ### 名字由来
-nuomi由nuo和mi组合而成，nuo代表诺诺网，mi是米粒的意思，表示框架像米粒一样小而轻，哈哈，欢迎小伙伴们加入诺诺网前端团队！
+nuomi由nuo和mi组合而成，nuo代表诺诺网，mi是米粒的意思，表示框架像米粒一样小巧、轻量、精致，诺诺出品必属精品，哈哈，欢迎小伙伴们加入诺诺网前端团队！
