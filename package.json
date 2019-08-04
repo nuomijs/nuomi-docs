@@ -1,7 +1,11 @@
 {
+  "name": "nuomi-docs",
+  "version": "1.0.0",
+  "author": "yinjiazeng",
+  "license": "ISC",
   "scripts": {
-    "start": "vuepress dev .",
-    "build": "vuepress build .",
+    "start": "vuepress dev docs",
+    "build": "vuepress build docs",
     "deploy": "bash deploy.sh"
   },
   "devDependencies": {
