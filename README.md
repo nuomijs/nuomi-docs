@@ -1,5 +1,5 @@
 ## 介绍
-使用[vuepress](https://cn.vuejs.org/) 搭建的静态网站
+使用<a href="https://cn.vuejs.org/" target="_blank">vuepress</a>搭建的静态网站
 
 ## 开发
 ```
@@ -8,4 +8,4 @@ yarn start
 ```
 
 ## 部署
-使用[Travis CI](https://travis-ci.org/) 进行自动部署，提交源码后，会自动生成静态网站
+使用<a href="https://travis-ci.org/" target="_blank">Travis CI</a>进行持续集成，提交源码后，会自动生成并部署静态网站
