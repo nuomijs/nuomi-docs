@@ -1,11 +1,16 @@
 module.exports = {
-  title: "NuomiJS",
-  description: "React + Redux + Router最佳实践",
+  title: 'NuomiJS',
+  description: 'React + Redux + Router最佳实践',
   head: [
+    // 网站图标
     ['link', { rel: 'icon', href: '/images/logo.png' }],
+    // 自定义样式
     ['link', { rel: 'stylesheet', href: '/styles/page.css' }],
   ],
   themeConfig: {
+    // 侧边栏导航深度
+    sidebarDepth: 2,
+    // 头部导航
     nav: [
       { text: '指南', link: '/guide/' },
       { text: 'API', link: '/api/' },
@@ -13,5 +18,14 @@ module.exports = {
       { text: 'Github', link: 'https://github.com/nuomijs/nuomi' },
       { text: '招聘', link: 'https://company.zhaopin.com/CZ620076330.htm' },
     ],
+    // 侧边栏
+    sidebar: {
+      '/guide/': [
+        ['', '指南'],
+      ],
+      '/api/': [
+        ['', 'API'],
+      ],
+    },
   },
 };
