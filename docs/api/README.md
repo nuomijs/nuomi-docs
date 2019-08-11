@@ -141,5 +141,11 @@ nuomi.config({
 合并props，state、reducers、data等会被浅合并
 
 ### store
-[redux store](https://cn.redux.js.org/docs/basics/Store.html)
-建议只使用getState
+请参考 [redux store](https://cn.redux.js.org/docs/basics/Store.html)
+建议只用下面三个：
+#### store.getState
+获取所有状态
+#### store.dispatch
+更新状态，只能触发reducers中的方法，如果想调用effects方法，请使用store.getStore替代
+#### store.getStore
+获取nuomi组件的store，参数是store id，返回对象包含getState和dispatch
