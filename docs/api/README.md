@@ -30,11 +30,12 @@
 | location  | {} | 当前匹配的路由数据，内部创建，不可修改，也无需传递 |
 | wrapper  | false | 是否给留有创建一个div容器，可实现缓存功能 |
 | reload  | false | 匹配路由后是否重置状态 |
-| onBefore  | function | 路由进入之前回调，返回false将无法展示内容，提供一个函数参数，调用后可以展示 |
+| onBefore  | function | 路由匹配后，在reducer被创建之前回调，返回false将无法展示内容，参数为强制展示回调，调用后可以展示内容 |
 | onChange  | function | 路由匹配时回调，支持函数和对象 |
 | onLeave  | function | 路由离开时回调，用于决定是否可以离开，暂未实现该功能 |
 其他参数同Nuomi组件，
-回调的执行顺序是 onBefore > routerChangeCallback > onChange > onInit，routerChangeCallback下面路由跳转时会讲到
+回调的执行顺序是 onBefore > location.data > onChange > onInit，location.data下面路由跳转时会讲到
+<br><b>注意：path和wrapper不能异步加载</b>
 
 ### Redirect
 |  props   | value  |  介绍  |
@@ -63,7 +64,7 @@
 |  参数   | value  |  介绍  |
 |  ----  | ----  | ---- |
 | path  | '' | 跳转的路由地址 |
-| data  | {} | 值为对象时表示跳转后传递的临时数据，切换路由后该数据将不存在，跳转后的路由模块中可以通过data获取，data对象上面Nuomi组件有提到，当值是函数时表示routerChangeCallback，函数的参数可以获取跳转后路由props，可以通过store更新状态，当值为布尔时，等同reload |
+| data  | {} | 值为对象时表示跳转后传递的临时数据，切换路由后该数据将不存在，跳转后的路由模块中可以通过data获取，data对象上面Nuomi组件有提到，当值是函数时，函数的参数可以获取跳转后路由的props，可以通过store更新状态，更新状态发生在onChange之前，当值为布尔时，等同reload |
 | reload  | false | 跳转后是否重置状态 |
 | force  | true | 当path是当前路由path时，是否强制跳转，reload为true时该值自动为true |
 不传参数表示获取当前路由数据
