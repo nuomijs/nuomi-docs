@@ -78,6 +78,8 @@ router.location(path, ({ store }) => { // 跳转后更新状态
         payload
     });
 }))
+// path支持对象，字段等同router.location()获取的对象字段
+router.location({ pathname: '/path', query: { a: 1 } }) // /path?a=1
 ```
 
 #### router.listener
