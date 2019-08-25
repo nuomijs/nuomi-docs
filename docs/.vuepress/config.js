@@ -16,7 +16,6 @@ module.exports = {
       { text: 'API', link: '/api/' },
       { text: '更新日志', link: 'https://github.com/nuomijs/nuomi/blob/master/CHANGELOG.md' },
       { text: 'Github', link: 'https://github.com/nuomijs/nuomi' },
-      { text: '招聘', link: 'https://company.zhaopin.com/CZ620076330.htm' },
     ],
     // 侧边栏
     sidebar: {

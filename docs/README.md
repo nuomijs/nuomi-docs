@@ -9,8 +9,13 @@ features:
   details: 无需在使用redux时绞尽脑汁命名与大量的switch case，无需在异步请求时手动控制loading状态。
 - title: 规范
   details: 扁平化结构方式组织你的代码，简洁规范的同时，也方便复用。
-footer: MIT Licensed | Copyright © 2013-present 诺诺网
+footer: MIT Licensed | Copyright © 2013-present
 ---
 
-#### 哪些项目在用？
-![诺诺云记账](/images/project/cloud.jpg)
+#### 哪些公司在用？
+<a href="https://www.jss.com.cn/" target="_blank" class="logo">
+  <img src="/images/logos/nuonuo.png" alt="诺诺网" width="110" />
+</a>
+<a href="http://www.wankeauto.com/" target="_blank" class="logo">
+  <img src="/images/logos/wanke.png" alt="万克能源" width="110" />
+</a>

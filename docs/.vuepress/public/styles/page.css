@@ -6,3 +6,17 @@
     overflow: hidden;
     box-sizing: border-box;
 }
+
+.logo {
+    display: inline-block;
+    margin-right: 8px;
+    width: 110px;
+    height: 56px;
+    line-height: 56px;
+    text-align: center;
+}
+
+.logo img {
+    width: 100px;
+    vertical-align: middle;
+}
