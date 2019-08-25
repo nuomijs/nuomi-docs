@@ -9,7 +9,7 @@ features:
   details: 无需在使用redux时绞尽脑汁命名与大量的switch case，无需在异步请求时手动控制loading状态。
 - title: 规范
   details: 扁平化结构方式组织你的代码，简洁规范的同时，也方便复用。
-footer: MIT Licensed | Copyright © 2013-present
+footer: MIT Licensed | Copyright © 2019-present
 ---
 
 #### 哪些公司在用？
