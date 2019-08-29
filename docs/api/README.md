@@ -145,10 +145,15 @@ nuomi.config({
 
 ### store
 请参考 [redux store](https://cn.redux.js.org/docs/basics/Store.html)
-建议只用下面三个：
+原生方法建议只使用getState和dispatch，除此之外额外新增了getStore和applyMiddleware方法
 #### store.getState
 获取所有状态
 #### store.dispatch
 更新状态，只能触发reducers中的方法，如果想调用effects方法，请使用store.getStore替代
 #### store.getStore
 获取nuomi组件的store，参数是store id，返回对象包含getState和dispatch
+#### store.applyMiddleware
+添加中间件
+```js
+store.applyMiddleware(thunk, logger, ...)
+```
