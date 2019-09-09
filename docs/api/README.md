@@ -30,11 +30,11 @@
 | location  | {} | 当前匹配的路由数据，内部创建，不可修改，也无需传递 |
 | wrapper  | false | 是否给留有创建一个div容器，可实现缓存功能 |
 | reload  | false | 匹配路由后是否重置状态 |
-| onBefore  | function | 路由匹配后，在reducer被创建之前回调，返回false将无法展示内容，参数为强制展示回调，调用后可以展示内容 |
+| onEnter  | function | 路由匹配后，在reducer被创建之前回调，返回false将无法展示内容，参数为强制展示回调，调用后可以展示内容 |
 | onChange  | function | 路由匹配时回调，支持函数和对象 |
-| onLeave  | function | 路由离开时回调，用于决定是否可以离开，暂未实现该功能 |
+| onLeave  | function | 路由离开时回调，用于决定是否可以离开 |
 其他参数同Nuomi组件，
-回调的执行顺序是 onBefore > location.data > onChange > onInit，location.data下面路由跳转时会讲到
+回调的执行顺序是 onEnter > location.data > onChange > onInit，location.data下面路由跳转时会讲到
 <br><b>注意：path和wrapper不能异步加载</b>
 
 ### Redirect
