@@ -20,9 +20,15 @@ module.exports = {
     // 侧边栏
     sidebar: {
       '/guide/': [
-        ['', '指南'],
-        ['started', '快速入门'],
-        ['advanced', '高级用法'],
+        {
+          title: '指南',
+          collapsable: false,
+          children: [
+            ['', '介绍'],
+            'getting-started',
+            'community',
+          ]
+        },
       ],
       '/api/': [
         ['', 'API'],
