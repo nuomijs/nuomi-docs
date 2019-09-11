@@ -1,6 +1,6 @@
 # 快速上手
 
-我们知道后台管理系统通常由登录页面和工作台组成，登录时校验账号密码通过后会跳转到工作台，工作台一般由菜单、导航以及内容区域构成，通过编写一个简单的后台管理系统，让大家更快速的理解和使用 nuomi。
+后台管理系统通常由登录页面和工作台组成，登录时校验账号密码通过后会跳转到工作台，工作台一般由菜单、导航以及内容区域构成，接下来通过编写一个简单的后台管理系统，让大家更快速的理解和使用 nuomi。
 
 ## 安装
 
@@ -339,8 +339,87 @@ effects建议单独文件定义，即方便维护，也方便拆分。编辑 src
 import services from '../services';
 
 export default {
-  async login() {
-    const { username, password, loading } = this.getState();
+  async login({ username, password, loading }) {
+    if (!loading) {
+      this.dispatch({
+        type: '_updateState',
+        payload: {
+          loading: true,
+        },
+      });
+      await services.login({ username, password });
+      this.dispatch({
+        type: '_updateState',
+        payload: {
+          loading: false,
+        },
+      });
+    }
+  }
+}
+```
+编辑 src/login/components/Layout/index.jsx
+```diff
+import React from 'react';
+import { connect } from 'nuomi';
+- import services from '../../services';
+
+- const Layout = ({ username, password, dispatch }) => {
++ const Layout = ({ username, password, loading, dispatch }) => {
+- const [loading, setLoading] = useState(false);
+  ...
+- const login = async () => {
+-   if(!loading){
+-     if (username === 'nuomi' && password === 'nuomi') {
+-       setLoading(true);
+-       await services.login({ username, password });
+-       setLoading(false);
+-     }
+-   }
+- };
++ const login = () => {
++   dispatch({
++     type: 'login',
++     payload: {
++       loading,
++       username,
++       password,
++     },
++   });
++ }
+  ...
+};
+
+- export default connect(({ username, password }) => ({ username, password }))(Layout);
++ export default connect(({ username, password, loading }) => ({ username, password, loading }))(Layout);
+```
+dispatch中的type不仅可以调用reducers中的方法，也可以调用effects中的方法，传递的payload可以在通过effects定义的方法参数中获取。
+::: tip
+effects中方法不能和reducers中方法重名，因为无法区分调用的是哪一个
+:::
+
+我们可以通过另外一种更好的方式实现相同的功能，编辑 src/login/components/Layout/index.jsx
+```diff
+...
+ const login = () => {
+    dispatch({
+      type: 'login',
+-     payload: {
+-       loading,
+-       username,
+-       password,
+-     },
+    });
+  }
+...
+```
+编辑 src/login/effects/index.js
+```diff
+...
+export default {
+-  async login({ username, password, loading }) {
++  async login() {
++   const { username, password, loading } = this.getState();
     if (!loading) {
       this.dispatch({
         type: '_updateState',
@@ -377,35 +456,86 @@ export default {
   },
 }
 ```
-通常不建议effects使用函数形式，主要是不方便复用。下面我们修改组件代码，编辑 src/login/components/Layout/index.jsx
+通常不建议effects使用函数形式，不太方便复用。
+
+有经验的同学可以发现effects login方法中调用了2次dispatch有很多重复代码，如果模块多，重复代码就越多，写起来也麻烦。可以考虑把重复部分抽离出来，编辑 src/login/effects/index.js
+```diff
+...
+export default {
++ updateState(payload) {
++   this.dispatch({
++     type: '_updateState',
++     payload,
++   });
++ },
+  async login() {
+    const { username, password, loading } = this.getState();
+    if (!loading) {
+-     this.dispatch({
+-       type: '_updateState',
+-       payload: {
+-         loading: true,
+-       },
+-     });
++     this.updateState({ loading: true });
+      await services.login({ username, password });
+-     this.dispatch({
+-       type: '_updateState',
+-       payload: {
+-         loading: false,
+-       },
+-     });
++      this.updateState({ loading: false });
+    }
+  }
+}
+```
+可以看到代码清爽了很多，但是总不能每个模块都定义一遍 updateState 方法吧。
+### 公共配置
+nuomi中可以通过配置做到统一复用，编辑 src/login/effects/index.js
+```diff
+...
+export default {
+- updateState(payload) {
+-   this.dispatch({
+-     type: '_updateState',
+-     payload,
+-   });
+- },
+...
+}
+```
+编辑 src/public/config.js
+```js
+import { nuomi } from 'nuomi';
+
+nuomi.config({
+  effects: {
+    updateState(payload) {
+      this.dispatch({
+        type: '_updateState',
+        payload,
+      });
+    },
+  },
+});
+```
+编辑 src/public/index.js
+```js
+import './config';
+```
+编辑 src/index.js
 ```diff
 import React from 'react';
-import { connect } from 'nuomi';
-- import services from '../../services';
-
-- const Layout = ({ username, password, dispatch }) => {
-+ const Layout = ({ username, password, loading, dispatch }) => {
-- const [loading, setLoading] = useState(false);
-  ...
-- const login = async () => {
--   if(!loading){
--     if (username === 'nuomi' && password === 'nuomi') {
--       setLoading(true);
--       await services.login({ username, password });
--       setLoading(false);
--     }
--   }
-- };
-+ const login = () => {
-+   dispatch({ type: 'login' });
-+ }
-  ...
-};
-
-- export default connect(({ username, password }) => ({ username, password }))(Layout);
-+ export default connect(({ username, password, loading }) => ({ username, password, loading }))(Layout);
+import ReactDOM from 'react-dom';
+- import './index.css';
++ import './public';
 ```
+只要是 nuomiProps，都可以通过 nuomi.config 进行配置，如果你配置多次，它会与上一次配置进行浅合并，这里注意命名，可能会导致覆盖问题。config.js 不单单可以配置nuomi公共部分，只要是全局配置相关都应该配置到此文件中，比如请求库配置，组件库配置等。
 
+至此我们登陆页面已经完成了，接下来我们来编写工作台模块。
+### 子路由
 ## 进阶
-
+### loading
 ### 按需加载
+
