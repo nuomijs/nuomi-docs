@@ -456,7 +456,7 @@ export default {
   },
 }
 ```
-上面用到了this.store，后面会详细讲解，通常不建议effects使用函数形式，不太方便复用。
+上面用到了this.store，后面会详细介绍，通常不建议effects使用函数形式，不太方便复用。
 
 有经验的同学可以发现effects login方法中调用了2次dispatch有很多重复代码，如果模块多，重复代码就越多，写起来也麻烦。可以考虑把重复部分抽离出来，编辑 src/login/effects/index.js
 ```diff
@@ -557,7 +557,7 @@ function App() {
   );
 }
 ```
-Nuomi 和 NuomiRoute 组件主要用于布局，只是NuomiRoute多了路由相关功能，它并没有 path 属性，而是 pathPrefix ，从字面意思可以看出是路径前缀，其实就是起到了匹配路径的作用，这里定义工作台路由path全部以/platform开头，比如首页是/platform，设置页是/platfrom/setting，否则就无法匹配，如果你的项目需求是需要多级嵌套子路由，那可能nuomi并不适合你。
+Nuomi 和 NuomiRoute 组件主要用于布局，只是NuomiRoute多了路由相关功能，它并没有 path 属性，而是 pathPrefix ，从字面意思可以看出是路径前缀，其实就是起到了匹配路径的作用，这里定义工作台路由path全部以/platform开头，比如首页是/platform，设置页是/platfrom/setting，否则就无法匹配，基于此原因NuomiRoute不是很方便开发多级嵌套路由的场景，如果你的项目需求是需要多级嵌套路由，那可能nuomi并不适合你。
 
 接下来我们来编写工作台模块，因为模块写法和登录模块一样，后面就不会详细介绍，编辑 src/platform/index.js
 ```js
@@ -749,7 +749,7 @@ export default {
   }
 }
 ```
-[router](/api/#router) 提供了很多路由相关的功能方法，其中location是最常用的方法之一，通过他可以实现跳转、路由刷新、设置是路由之间的模块通信。
+[router](/api/#router) 提供了很多路由相关的功能方法，其中location是最常用的方法之一，通过他可以实现跳转、路由刷新、甚至是路由之间的模块通信。
 ## 进阶
 ### 按需加载
 ### loading
