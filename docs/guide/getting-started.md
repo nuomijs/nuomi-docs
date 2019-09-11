@@ -35,19 +35,7 @@ src 目录结构如下所示
 │   │   ├── effects      // 工作台布局模块业务逻辑目录
 │   │   └── services     // 工作台布局模块接口目录
 │   └── pages                // 工作台路由模块目录
-│       ├── detail           // 详细详细模块
-│       │   ├── index.js
-│       │   ├── components
-│       │   │   └── Layout
-│       │   ├── effects
-│       │   └── services
 │       ├── index            // 首页模块
-│       │   ├── index.js
-│       │   ├── components
-│       │   │   └── Layout
-│       │   ├── effects
-│       │   └── services
-│       ├── list             // 列表模块
 │       │   ├── index.js
 │       │   ├── components
 │       │   │   └── Layout
@@ -161,7 +149,7 @@ export default request.create(
 ```
 [nuomi-request](https://github.com/nuomijs/nuomi-request) 还在开发阶段，尚不能使用，实际中你可以选择自己喜欢的请求库，只要请求返回的promise即可。
 
-### 编写 UI 组件
+### 编写UI组件
 
 编辑 src/login/components/Layout/index.jsx
 
@@ -185,6 +173,8 @@ const Layout = () => {
         setLoading(true);
         await services.login({ username, password });
         setLoading(false);
+      } else {
+        window.alert('账号密码有误');
       }
     }
   };
@@ -217,7 +207,7 @@ const Layout = () => {
 export default Layout;
 ```
 
-登录功能需要获取账号密码，在这个例子中可以用 2 种方式登录，获取账号密码的方式可以通过 ref 或者内部状态，可是如果组件嵌套深甚至跨组件的话，获取值就变得复杂麻烦。如果产品经理希望登录后再返回到登录页面，保留之前的登录状态，那处理起来就更加麻烦，这时我们可以使用状态管理库来处理这些问题，nuomi 中使用就是 [redux](https://redux.js.org) 来进行统一状态管理。
+登录功能需要获取账号密码，在这个例子中可以用 2 种方式登录，获取账号密码的方式可以通过 ref 或者内部状态，如果组件嵌套深甚至跨组件的话，获取值就变得复杂麻烦。后期产品经理希望登录后再返回到登录页面，保留之前的登录状态，那处理起来就更加麻烦，这时我们可以使用状态管理库来处理这些问题，nuomi 中使用就是 [redux](https://redux.js.org) 来进行统一状态管理。
 
 ### 定义状态
 
@@ -341,19 +331,23 @@ import services from '../services';
 export default {
   async login({ username, password, loading }) {
     if (!loading) {
-      this.dispatch({
-        type: '_updateState',
-        payload: {
-          loading: true,
-        },
-      });
-      await services.login({ username, password });
-      this.dispatch({
-        type: '_updateState',
-        payload: {
-          loading: false,
-        },
-      });
+      if (username === 'nuomi' && password === 'nuomi') {
+        this.dispatch({
+          type: '_updateState',
+          payload: {
+            loading: true,
+          },
+        });
+        await services.login({ username, password });
+        this.dispatch({
+          type: '_updateState',
+          payload: {
+            loading: false,
+          },
+        });
+      } else {
+        window.alert('账号密码有误')
+      }
     }
   }
 }
@@ -374,6 +368,8 @@ import { connect } from 'nuomi';
 -       setLoading(true);
 -       await services.login({ username, password });
 -       setLoading(false);
+-     } else {
+-       window.alert('账号密码有误');
 -     }
 -   }
 - };
@@ -421,19 +417,23 @@ export default {
 +  async login() {
 +   const { username, password, loading } = this.getState();
     if (!loading) {
-      this.dispatch({
-        type: '_updateState',
-        payload: {
-          loading: true,
-        },
-      });
-      await services.login({ username, password });
-      this.dispatch({
-        type: '_updateState',
-        payload: {
-          loading: false,
-        },
-      });
+      if (username === 'nuomi' && password === 'nuomi') {
+        this.dispatch({
+          type: '_updateState',
+          payload: {
+            loading: true,
+          },
+        });
+        await services.login({ username, password });
+        this.dispatch({
+          type: '_updateState',
+          payload: {
+            loading: false,
+          },
+        });
+      } else {
+        window.alert('账号密码有误');
+      }
     }
   }
 }
@@ -456,7 +456,7 @@ export default {
   },
 }
 ```
-通常不建议effects使用函数形式，不太方便复用。
+上面用到了this.store，后面会详细讲解，通常不建议effects使用函数形式，不太方便复用。
 
 有经验的同学可以发现effects login方法中调用了2次dispatch有很多重复代码，如果模块多，重复代码就越多，写起来也麻烦。可以考虑把重复部分抽离出来，编辑 src/login/effects/index.js
 ```diff
@@ -471,21 +471,25 @@ export default {
   async login() {
     const { username, password, loading } = this.getState();
     if (!loading) {
--     this.dispatch({
--       type: '_updateState',
--       payload: {
--         loading: true,
--       },
--     });
-+     this.updateState({ loading: true });
-      await services.login({ username, password });
--     this.dispatch({
--       type: '_updateState',
--       payload: {
--         loading: false,
--       },
--     });
-+      this.updateState({ loading: false });
+      if (username === 'nuomi' && password === 'nuomi') {
+-       this.dispatch({
+-         type: '_updateState',
+-         payload: {
+-           loading: true,
+-         },
+-       });
++       this.updateState({ loading: true });
+        await services.login({ username, password });
+-       this.dispatch({
+-         type: '_updateState',
+-         payload: {
+-           loading: false,
+-         },
+-       });
++       this.updateState({ loading: false });
+      } else {
+        window.alert('账号密码有误');
+      }
     }
   }
 }
@@ -533,9 +537,222 @@ import ReactDOM from 'react-dom';
 ```
 只要是 nuomiProps，都可以通过 nuomi.config 进行配置，如果你配置多次，它会与上一次配置进行浅合并，这里注意命名，可能会导致覆盖问题。config.js 不单单可以配置nuomi公共部分，只要是全局配置相关都应该配置到此文件中，比如请求库配置，组件库配置等。
 
-至此我们登陆页面已经完成了，接下来我们来编写工作台模块。
+至此登陆页面已经完成了，接下来我们来编写工作台模块。
+
 ### 子路由
+工作台与登陆页面不同，由导航和内容组成，可变部分只有内容，不可能给每个页面都定义导航，这时就需要用到子路由，外层路由负责渲染布局模块，内部路由负责渲染内容。编辑 src/App.js
+```diff
+- import { Router, Route, Redirect } from 'nuomi';
++ import { Router, Route, NuomiRoute, Redirect } from 'nuomi';
+import login from './login';
++import platform from './platform';
+
+function App() {
+  return (
+    <Router>
+      <Route path="/login" {...login} />
++     <NuomiRoute pathPrefix="/platform" {...platform} />
+      <Redirect from="/" to="/login" />
+    </Router>
+  );
+}
+```
+Nuomi 和 NuomiRoute 组件主要用于布局，只是NuomiRoute多了路由相关功能，它并没有 path 属性，而是 pathPrefix ，从字面意思可以看出是路径前缀，其实就是起到了匹配路径的作用，这里定义工作台路由path全部以/platform开头，比如首页是/platform，设置页是/platfrom/setting，否则就无法匹配，如果你的项目需求是需要多级嵌套子路由，那可能nuomi并不适合你。
+
+接下来我们来编写工作台模块，因为模块写法和登录模块一样，后面就不会详细介绍，编辑 src/platform/index.js
+```js
+export * from './layout';
+```
+编辑 src/platform/layout/services/index.js
+```js
+import request from 'nuomi-request';
+
+export request.create({
+  getUser: '/api/getUser'
+}, {
+  getUser: {
+    status: 200,
+    data: {
+      username: 'nuomi',
+    },
+  }
+});
+```
+
+编辑 src/platform/layout/effects/index.js
+```js
+import services from '../services';
+
+export default {
+  async getUser() {
+    this.updateState({ loading: true });
+    const { username } = await services.getUser();
+    this.updateState({ loading: false, username });
+  },
+}
+```
+
+编辑 src/platform/layout/index.js
+```js
+import React from 'react';
+import effects from './effects';
+import Layout from './components/Layout';
+
+export default {
+  id: 'global',
+  state: {
+    // 用户名
+    username: '',
+  },
+  effects,
+  render() {
+    return <Layout />
+  },
+  onInit() {
+    this.store.dispatch({
+      type: 'getUser',
+    });
+  },
+}
+```
+nuomi中的 reducer 全部是动态创建的，Nuomi、NuomiRoute、Route组件在创建时才会创建 reducer，反之在卸载时也会移除，只有 reducer 在创建后才可以对状态操作，上面 nuomiProps 中的 onInit 就是在 reducer 被创建后触发，Route组件中的onInit与Nuomi和NuomiRoute中的稍微有些区别，后面会详细介绍。
+
+前面说过一个 reducer 对应一个唯一的key，nuomi中创建 reducer 时也要定义这个key，只是默认情况下会动态创建，值会以 nuomi_1、nuomi_2...形式递增。当然也可以手动定义，在 nuomiProps
+中通过 id 属性定义，它在nuomi中被叫做storeId，一般不建议手动定义，除非必须，比如跨模块通信。我们知道redux中所有的状态都存到一个全局的store对象中的，通过store.getState可以获取所有状态，状态的key就是reducer对应的key，每次读写状态都需要传这个key太麻烦，也不利于复用。nuomi为每个模块定义了一个私有store，用于访问自身模块状态，该store只有getState和dispatch2个方法，在 nuomiProps 方法内，通过this.store访问，这里this等同nuomiProps。
+
+编辑 src/platform/layout/components/Layout/index.jsx
+```js
+import React from 'react';
+import Header from '../Header';
+import Sidebar from '../Sidebar';
+import Content from '../Content';
+
+const Layout = () => {
+  return (
+    <div>
+      <Header>
+      <Sidebar />
+      <Content />
+    </div>
+  );
+};
+```
+编辑 src/platform/layout/components/Header/index.jsx
+```js
+import React from 'react';
+import { connect } from 'nuomi';
+
+const Header = ({ username }) => {
+  return (
+    <div>{username}</div>
+  );
+};
+
+export default connect(({ username }) => ({ username }))(Header);
+```
+编辑 src/platform/layout/components/Sidebar/index.jsx
+```js
+import React from 'react';
+import { Link, connect } from 'nuomi';
+
+const Sidebar = () => {
+  const paths = [{
+    path: '/platform',
+    title: '首页',
+  }, {
+    path: '/platform/setting',
+    title: '设置',
+  }];
+  return (
+    <div>
+      {paths.map(({ path, title }) => (
+        <div key={path}>
+          <Link to={path}>{title}</Link>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+export default Sidebar;
+```
+编辑 src/platform/layout/components/Content/index.jsx
+```js
+import React from 'react';
+import { Route, Redirect } from 'nuomi';
+import index from '../../pages/index';
+import setting from '../../pages/setting';
+
+const Content = () => {
+  return (
+    <div>
+      <Route path="/platform" {...index} />
+      <Route path="/platform/setting" {...setting} />
+      <Redirect to="/platform" />
+    </div>
+  );
+};
+
+export default Content;
+```
+
+编辑 src/platform/pages/index/components/Layout/index.jsx
+```js
+import React from 'react';
+
+const Layout = () => {
+  return (
+    <div>
+      hello,首页
+    </div>
+  );
+};
+
+export default Layout;
+```
+
+编辑 src/platform/pages/setting/components/Layout/index.jsx
+```js
+import React from 'react';
+
+const Layout = () => {
+  return (
+    <div>
+      hello,设置
+    </div>
+  );
+};
+
+export default Layout;
+```
+
+访问页面，可以看到页面正常跳转，至此工作台基本框架已经搭建完成，具体的业务功能稍后再说。
+### 路由跳转
+还记得登录模块功能吗，功能是要登录后自动跳转到工作台，目前并没有跳转，现在我们来实现它，编辑 src/login/effects/index.js
+```diff
+import services from '../services';
++ import { router } from 'nuomi';
+
+export default {
+  async login() {
+    const { username, password, loading } = this.getState();
+    if (!loading) {
+      if (username === 'nuomi' && password === 'nuomi') {
+        this.updateState({ loading: true });
+        await services.login({ username, password });
+        this.updateState({ loading: false });
++       router.location('/platform');
+      } else {
+        window.alert('账号密码有误');
+      }
+    }
+  }
+}
+```
+[router](/api/#router) 提供了很多路由相关的功能方法，其中location是最常用的方法之一，通过他可以实现跳转、路由刷新、设置是路由之间的模块通信。
 ## 进阶
-### loading
 ### 按需加载
+### loading
+### 跨模块通信
+### 缓存路由
 
