@@ -556,6 +556,7 @@ function App() {
     </Router>
   );
 }
+...
 ```
 Nuomi 和 NuomiRoute 组件主要用于布局，只是NuomiRoute多了路由相关功能，它并没有 path 属性，而是 pathPrefix ，从字面意思可以看出是路径前缀，其实就是起到了匹配路径的作用，这里定义工作台路由path全部以/platform开头，比如首页是/platform，设置页是/platfrom/setting，否则就无法匹配，基于此原因NuomiRoute不是很方便开发多级嵌套路由的场景，如果你的项目需求是需要多级嵌套路由，那可能nuomi并不适合你。
 
@@ -567,7 +568,7 @@ export * from './layout';
 ```js
 import request from 'nuomi-request';
 
-export request.create({
+export default request.create({
   getUser: '/api/getUser'
 }, {
   getUser: {
@@ -636,6 +637,8 @@ const Layout = () => {
     </div>
   );
 };
+
+export default Layout;
 ```
 编辑 src/platform/layout/components/Header/index.jsx
 ```js
@@ -726,7 +729,7 @@ const Layout = () => {
 export default Layout;
 ```
 
-访问页面，可以看到页面正常跳转，至此工作台基本框架已经搭建完成，具体的业务功能稍后再说。
+访问页面，可以看到页面正常跳转，至此工作台基本框架已经搭建完成，具体的业务功能稍后再实现。
 ### 路由跳转
 还记得登录模块功能吗，功能是要登录后自动跳转到工作台，目前并没有跳转，现在我们来实现它，编辑 src/login/effects/index.js
 ```diff
@@ -750,9 +753,133 @@ export default {
 }
 ```
 [router](/api/#router) 提供了很多路由相关的功能方法，其中location是最常用的方法之一，通过他可以实现跳转、路由刷新、甚至是路由之间的模块通信。
+
+### 路由钩子
+吧啦吧啦...
+
 ## 进阶
+通过前面的实战练习，想必你大概已经知道如何使用nuomi开发单页应用了，通过下面的学习，可以更进一步的提升你的开发体验。
 ### 按需加载
+单页应用实际上是将所有模块打包到一个文件里，加载后通过路由匹配展示对应的模块，模块越多则文件越大，首次加载的速度也会越慢，有些模块可能永远不会被用户访问，nuomi中可以通过按需加载的方式解决这个问题，用户访问时才会加载所需的模块。
+
+编辑 src/App.js
+```diff
+import { Router, Route, NuomiRoute, Redirect } from 'nuomi';
+- import login from './login';
+- import platform from './platform';
++
++ const loadLogin = () => import('./login');
++ const loadPlatform = () => import('./platform');
+
+function App() {
+  return (
+    <Router>
+-     <Route path="/login" {...login} />
+-     <NuomiRoute pathPrefix="/platform" {...platform} />
++     <Route path="/login" async={loadLogin} />
++     <NuomiRoute pathPrefix="/platform" async={loadPlatform}/>
+      <Redirect from="/" to="/login" />
+    </Router>
+  );
+}
+...
+```
+Nuomi、NuomiRoute、Route组件都可以在nuomiProps中定义async来进行按需加载。
+::: tip
+Route组件中的 path 和 wrapper 不能包含在按需加载范围内
+:::
 ### loading
+还记得effects中的loading处理吗，每次异步开始之前需要先true，异步结束后再false，nuomi中可以简化该操作，无需手动控制loading状态。
+
+编辑 src/login/index.js
+```diff
+...
+export default {
+  state: {
+   username: '',
+   password: '',
+-  loading: false,
+  },
+  ...
+};
+```
+
+编辑 src/login/effects/index.js
+```diff
+...
+export default {
+- async login() {
+-   const { username, password, loading } = this.getState();
+-   if (!loading) {
++ async $login() {
++    const { username, password, loadings } = this.getState();
++   if (!loadings.$login) {
+      if (username === 'nuomi' && password === 'nuomi') {
+-       this.updateState({ loading: true });
+        await services.login({ username, password });
+-       this.updateState({ loading: false });
++       router.location('/platform');
+      } else {
+        window.alert('账号密码有误');
+      }
+    }
+  }
+}
+```
+
+编辑 src/login/components/Layout/index.jsx
+```diff
+...
+- const Layout = ({ username, password, loading, dispatch }) => {
++ const Layout = ({ username, password, loadings, dispatch }) => {
+  ...
+  const login = () => {
+    dispatch({
+-     type: 'login',
++     type: '$login',
+    });
+  }
+
+  const keydown = (e) => {
+    if (e.keyCode === 13) {
+      login();
+    }
+  };
+
+  return (
+    <fieldset>
+      <legend>登 录</legend>
+      <p>
+        账号：
+        <input type="text" value={username} onChange={(e) => change(e, 'username')} />
+      </p>
+      <p>
+        密码：
+        <input type="password" value={password} onChange={(e) => change(e, 'password')} onKeydown={keydown} />
+        回车也可以登录！
+      </p>
+      <p>
+-       <button onClick={login}>{!loading ? '登 录' : '正在登录...'}</button>
++       <button onClick={login}>{!loadings.$login ? '登 录' : '正在登录...'}</button>
+      </p>
+    </fieldset>
+  );
+};
+
+- export default connect(({ username, password, loading }) => ({ username, password,
++ export default connect(({ username, password, loadings }) => ({ username, password,
+```
+通过给effects方法添加 **$** 前缀，可以实现自动loading处理，nuomi会将该方法名作为状态存到loadings状态对象中，通过loadings.$x获取loading状态。
+::: tip
+loadings.$x 默认是undefined，判断时建议转成boolean，或者也可以在state中定义默认值
+:::
+
+### onChange
+吧啦吧啦...
+
 ### 跨模块通信
+吧啦吧啦...
+
 ### 缓存路由
+吧啦吧啦...
 
