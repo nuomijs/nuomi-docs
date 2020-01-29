@@ -54,7 +54,18 @@
 用法同react-redux connect，区别是获取状态的函数，第一个参数是获取当前模块的状态，第二个参数是获取全部store里的状态
 
 ### withNuomi
-使用后组件中提供nuomiProps和location2个props，nuomiProps指向Nuomi/NuomiRoute/Route组件的props，location是当前路由数据
+使用后组件中提供nuomiProps属性，nuomiProps指向Nuomi/NuomiRoute/Route组件的props
+
+## Hooks
+### useConnect
+高阶组件connect的替代方法
+
+方法返回一个数组，第一个值是状态，第二个值为dispatch，不传参数默认返回当前模块所有状态，接收一个回调函数参数时，用法等同connect第一个参数
+
+### useNuomi
+高阶组件withNuomi的替代方法
+
+方法返回一个对象，包含nuomiProps属性
 
 ## 对象
 ### router
@@ -90,7 +101,7 @@ router.location({ pathname: '/path', query: { a: 1 } }) // /path?a=1
 返回取消监听方法
 
 #### router.reload
-路由刷新，等同router.location(当前path, true) 
+路由刷新，等同router.location(当前path, true)
 
 #### router.back
 后退
