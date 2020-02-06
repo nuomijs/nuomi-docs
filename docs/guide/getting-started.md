@@ -147,7 +147,7 @@ export default createServices(
   }
 );
 ```
-[nuomi-request](https://github.com/nuomijs/nuomi-request) 是基于 [axios](https://github.com/axios/axios) 和 [mockjs](https://github.com/nuysoft/Mock) 封装的请求库，实际项目中你可以选择自己喜欢的请求库，只要请求返回的promise即可。
+[nuomi-request](https://github.com/nuomijs/nuomi-request) 是基于 [axios](https://github.com/axios/axios) 封装的请求库，实际项目中你可以选择自己喜欢的请求库，只要请求返回的promise即可。
 
 ### 编写UI组件
 
