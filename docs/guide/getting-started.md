@@ -133,9 +133,9 @@ export default {
 因为登录需要登录接口，在编写组件之前，我们先定义好接口，编辑 src/login/services/index.js
 
 ```js
-import request from 'nuomi-request';
+import { createServices } from 'nuomi-request';
 
-export default request.create(
+export default createServices(
   {
     login: "/api/login:post"
   },
@@ -147,7 +147,7 @@ export default request.create(
   }
 );
 ```
-[nuomi-request](https://github.com/nuomijs/nuomi-request) 还在开发阶段，尚不能使用，实际中你可以选择自己喜欢的请求库，只要请求返回的promise即可。
+[nuomi-request](https://github.com/nuomijs/nuomi-request) 是基于 [axios](https://github.com/axios/axios) 和 [mockjs](https://github.com/nuysoft/Mock) 封装的请求库，实际项目中你可以选择自己喜欢的请求库，只要请求返回的promise即可。
 
 ### 编写UI组件
 
@@ -566,9 +566,9 @@ export * from './layout';
 ```
 编辑 src/platform/layout/services/index.js
 ```js
-import request from 'nuomi-request';
+import { createServices } from 'nuomi-request';
 
-export default request.create({
+export default createServices({
   getUser: '/api/getUser'
 }, {
   getUser: {
