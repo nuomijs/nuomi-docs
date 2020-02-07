@@ -25,7 +25,7 @@ src 目录结构如下所示
 │   ├── components  // 登录模块组件目录
 │   │   └── Layout  // 登录模块入口组件
 │   ├── effects     // 登录模块业务逻辑目录
-│   └── services    // 登录模块接口目录
+│   └── requests    // 登录模块接口目录
 ├── platform             // 工作台模块
 │   ├── index.js         // 工作台模块主入口
 │   ├── layout           // 工作台框架布局目录
@@ -33,24 +33,24 @@ src 目录结构如下所示
 │   │   ├── components   // 工作台布局模块组件目录
 │   │   │   └── Layout   // 工作台布局模块入口组件
 │   │   ├── effects      // 工作台布局模块业务逻辑目录
-│   │   └── services     // 工作台布局模块接口目录
+│   │   └── requests     // 工作台布局模块接口目录
 │   └── pages                // 工作台路由模块目录
 │       ├── index            // 首页模块
 │       │   ├── index.js
 │       │   ├── components
 │       │   │   └── Layout
 │       │   ├── effects
-│       │   └── services
+│       │   └── requests
 │       └── setting          // 设置模块
 │           ├── index.js
 │           ├── components
 │           ├── effects
-│           └── services
+│           └── requests
 └── public              // 公共模块目录
     ├── config.js       // 配置模块
     ├── index.js        // 公共模块入口
     ├── components      // 公共组件目录
-    ├── services        // 公共接口目录
+    ├── requests        // 公共接口目录
     └── styles          // 公共样式目录
 ```
 
@@ -130,12 +130,12 @@ export default {
 
 ### 定义接口
 
-因为登录需要登录接口，在编写组件之前，我们先定义好接口，编辑 src/login/services/index.js
+因为登录需要登录接口，在编写组件之前，我们先定义好接口，编辑 src/login/requests/index.js
 
 ```js
-import { createServices } from 'nuomi-request';
+import { crrateRequests } from 'nuomi-request';
 
-export default createServices(
+export default crrateRequests(
   {
     login: "/api/login:post"
   },
@@ -155,7 +155,7 @@ export default createServices(
 
 ```js
 import React, { useState } from 'react';
-import services from '../../services';
+import requests from '../../requests';
 
 const Layout = () => {
   const [username, setUsername] = useState('');
@@ -171,7 +171,7 @@ const Layout = () => {
     if(!loading){
       if (username === 'nuomi' && password === 'nuomi') {
         setLoading(true);
-        await services.login({ username, password });
+        await requests.login({ username, password });
         setLoading(false);
       } else {
         window.alert('账号密码有误');
@@ -235,7 +235,7 @@ export default {
 ```diff
 import React from 'react';
 + import { connect } from 'nuomi';
-import services from '../../services';
+import requests from '../../requests';
 
 - const Layout = () => {
 + const Layout = ({ username, password, dispatch }) => {
@@ -326,7 +326,7 @@ export default {
 ```
 effects建议单独文件定义，即方便维护，也方便拆分。编辑 src/login/effects/index.js
 ```js
-import services from '../services';
+import requests from '../requests';
 
 export default {
   async login({ username, password, loading }) {
@@ -338,7 +338,7 @@ export default {
             loading: true,
           },
         });
-        await services.login({ username, password });
+        await requests.login({ username, password });
         this.dispatch({
           type: '_updateState',
           payload: {
@@ -356,7 +356,7 @@ export default {
 ```diff
 import React from 'react';
 import { connect } from 'nuomi';
-- import services from '../../services';
+- import requests from '../../requests';
 
 - const Layout = ({ username, password, dispatch }) => {
 + const Layout = ({ username, password, loading, dispatch }) => {
@@ -366,7 +366,7 @@ import { connect } from 'nuomi';
 -   if(!loading){
 -     if (username === 'nuomi' && password === 'nuomi') {
 -       setLoading(true);
--       await services.login({ username, password });
+-       await requests.login({ username, password });
 -       setLoading(false);
 -     } else {
 -       window.alert('账号密码有误');
@@ -424,7 +424,7 @@ export default {
             loading: true,
           },
         });
-        await services.login({ username, password });
+        await requests.login({ username, password });
         this.dispatch({
           type: '_updateState',
           payload: {
@@ -479,7 +479,7 @@ export default {
 -         },
 -       });
 +       this.updateState({ loading: true });
-        await services.login({ username, password });
+        await requests.login({ username, password });
 -       this.dispatch({
 -         type: '_updateState',
 -         payload: {
@@ -564,11 +564,11 @@ Nuomi 和 NuomiRoute 组件主要用于布局，只是NuomiRoute多了路由相�
 ```js
 export * from './layout';
 ```
-编辑 src/platform/layout/services/index.js
+编辑 src/platform/layout/requests/index.js
 ```js
-import { createServices } from 'nuomi-request';
+import { crrateRequests } from 'nuomi-request';
 
-export default createServices({
+export default crrateRequests({
   getUser: '/api/getUser'
 }, {
   getUser: {
@@ -582,12 +582,12 @@ export default createServices({
 
 编辑 src/platform/layout/effects/index.js
 ```js
-import services from '../services';
+import requests from '../requests';
 
 export default {
   async getUser() {
     this.updateState({ loading: true });
-    const { username } = await services.getUser();
+    const { username } = await requests.getUser();
     this.updateState({ loading: false, username });
   },
 }
@@ -733,7 +733,7 @@ export default Layout;
 ### 路由跳转
 还记得登录模块功能吗，功能是要登录后自动跳转到工作台，目前并没有跳转，现在我们来实现它，编辑 src/login/effects/index.js
 ```diff
-import services from '../services';
+import requests from '../requests';
 + import { router } from 'nuomi';
 
 export default {
@@ -742,7 +742,7 @@ export default {
     if (!loading) {
       if (username === 'nuomi' && password === 'nuomi') {
         this.updateState({ loading: true });
-        await services.login({ username, password });
+        await requests.login({ username, password });
         this.updateState({ loading: false });
 +       router.location('/platform');
       } else {
@@ -816,7 +816,7 @@ export default {
 +   if (!loadings.$login) {
       if (username === 'nuomi' && password === 'nuomi') {
 -       this.updateState({ loading: true });
-        await services.login({ username, password });
+        await requests.login({ username, password });
 -       this.updateState({ loading: false });
 +       router.location('/platform');
       } else {
