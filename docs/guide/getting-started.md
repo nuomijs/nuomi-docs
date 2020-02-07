@@ -133,9 +133,9 @@ export default {
 因为登录需要登录接口，在编写组件之前，我们先定义好接口，编辑 src/login/requests/index.js
 
 ```js
-import { crrateRequests } from 'nuomi-request';
+import { createRequests } from 'nuomi-request';
 
-export default crrateRequests(
+export default createRequests(
   {
     login: "/api/login:post"
   },
@@ -566,9 +566,9 @@ export * from './layout';
 ```
 编辑 src/platform/layout/requests/index.js
 ```js
-import { crrateRequests } from 'nuomi-request';
+import { createRequests } from 'nuomi-request';
 
-export default crrateRequests({
+export default createRequests({
   getUser: '/api/getUser'
 }, {
   getUser: {
