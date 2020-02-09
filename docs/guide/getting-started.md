@@ -54,7 +54,7 @@ src 目录结构如下所示
     └── styles          // 公共样式目录
 ```
 
-如果你使用的是 [vscode](https://code.visualstudio.com/) ，可以使用 [nuomi-vscode](https://github.com/nuomijs/nuomi-vscode) 插件快速创建目录。这里的目录结构可以根据实际情况进行调整，比如可以在 platform 下面新增一个 public 目录，作为工作台公共模块配置，也可以删除各自模块中的 sevices，把所有接口配置到公共接口目录中。
+如果你使用的是 [Visual Studio Code](https://code.visualstudio.com/)开发项目 ，可以使用 [nuomi-vscode](https://github.com/nuomijs/nuomi-vscode) 插件快速创建目录。这里的目录结构可以根据实际情况进行调整，比如可以在 platform 下面新增一个 public 目录，作为工作台公共模块配置，也可以删除各自模块中的 sevices，把所有接口配置到公共接口目录中。
 
 ## 编写应用
 
@@ -159,7 +159,7 @@ import requests from '../../requests';
 
 const Layout = () => {
   const [username, setUsername] = useState('');
-  const [password, setPassword = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
   const change = (e, name) => {
@@ -168,14 +168,12 @@ const Layout = () => {
   };
 
   const login = async () => {
-    if(!loading){
-      if (username === 'nuomi' && password === 'nuomi') {
-        setLoading(true);
-        await requests.login({ username, password });
-        setLoading(false);
-      } else {
-        window.alert('账号密码有误');
-      }
+    if (username === 'nuomi' && password === 'nuomi') {
+      setLoading(true);
+      await requests.login({ username, password });
+      setLoading(false);
+    } else {
+      window.alert('账号密码有误');
     }
   };
 
@@ -260,7 +258,7 @@ import requests from '../../requests';
 + export default connect(({ username, password }) => ({ username, password }))(Layout);
 ```
 
-上面 dispatch 用于更新状态，type 是[内置](/api/#nuomi-2)的，定义在 reducers 中，你也可以在 nuomiProps 中自定义 type，编辑 src/login/index.js
+上面 dispatch 用于更新状态，actionType”_updateState“是框架[内置](/api/#nuomi-2)的，定义在 reducers 中，你也可以在 nuomiProps 中自定义 actionType，编辑 src/login/index.js
 
 ```diff
 ...
@@ -300,7 +298,7 @@ const Layout = ({ username, password, dispatch }) => {
 
 修改代码后，可以看到和 \_updateState 是同样的效果，不过这里建议没有特殊情况，建议只使用 \_updateState 即可。
 
-到目前为止，我们使用 redux 解决了状态跨组件通信问题，但是还有一个问题没有解决。回顾下 Layout 组件中的代码，login是一个异步操作，回车和按钮登录都调用了login，实际和状态一样也存在跨组件通信问题，但是它不能定义在状态中，除此之外我们不应该把业务逻辑写到组件中，因为随着业务的升级，可能会导致组件中业务代码越来越多，即不利于复用也不利于维护。
+到目前为止，我们使用 redux 解决了状态跨组件通信问题，但是还有一个问题没有解决。回顾下 Layout 组件中的代码，login是一个异步操作，回车和按钮登录都调用了login，该逻辑和状态一样也可能存在跨组件通信问题，但是它不能通过redux管理，除此之外我们不应该把业务逻辑写到组件中，因为随着业务的升级，可能会导致组件中业务代码越来越多，即不利于复用也不利于维护。
 
 ### 异步操作
 nuomi中可以使用effects来定义异步操作。effect即副作用，在函数式编程中，计算以外的操作都属于副作用，常见的就是数据库读写、I/O操作等。下面我们来改写代码，首先编辑 src/login/index.js
@@ -330,24 +328,22 @@ import requests from '../requests';
 
 export default {
   async login({ username, password, loading }) {
-    if (!loading) {
-      if (username === 'nuomi' && password === 'nuomi') {
-        this.dispatch({
-          type: '_updateState',
-          payload: {
-            loading: true,
-          },
-        });
-        await requests.login({ username, password });
-        this.dispatch({
-          type: '_updateState',
-          payload: {
-            loading: false,
-          },
-        });
-      } else {
-        window.alert('账号密码有误')
-      }
+    if (username === 'nuomi' && password === 'nuomi') {
+      this.dispatch({
+        type: '_updateState',
+        payload: {
+          loading: true,
+        },
+      });
+      await requests.login({ username, password });
+      this.dispatch({
+        type: '_updateState',
+        payload: {
+          loading: false,
+        },
+      });
+    } else {
+      window.alert('账号密码有误')
     }
   }
 }
@@ -363,14 +359,12 @@ import { connect } from 'nuomi';
 - const [loading, setLoading] = useState(false);
   ...
 - const login = async () => {
--   if(!loading){
--     if (username === 'nuomi' && password === 'nuomi') {
--       setLoading(true);
--       await requests.login({ username, password });
--       setLoading(false);
--     } else {
--       window.alert('账号密码有误');
--     }
+-   if (username === 'nuomi' && password === 'nuomi') {
+-     setLoading(true);
+-     await requests.login({ username, password });
+-     setLoading(false);
+-   } else {
+-     window.alert('账号密码有误');
 -   }
 - };
 + const login = () => {
@@ -416,24 +410,22 @@ export default {
 -  async login({ username, password, loading }) {
 +  async login() {
 +   const { username, password, loading } = this.getState();
-    if (!loading) {
-      if (username === 'nuomi' && password === 'nuomi') {
-        this.dispatch({
-          type: '_updateState',
-          payload: {
-            loading: true,
-          },
-        });
-        await requests.login({ username, password });
-        this.dispatch({
-          type: '_updateState',
-          payload: {
-            loading: false,
-          },
-        });
-      } else {
-        window.alert('账号密码有误');
-      }
+    if (username === 'nuomi' && password === 'nuomi') {
+      this.dispatch({
+        type: '_updateState',
+        payload: {
+          loading: true,
+        },
+      });
+      await requests.login({ username, password });
+      this.dispatch({
+        type: '_updateState',
+        payload: {
+          loading: false,
+        },
+      });
+    } else {
+      window.alert('账号密码有误');
     }
   }
 }
@@ -470,26 +462,24 @@ export default {
 + },
   async login() {
     const { username, password, loading } = this.getState();
-    if (!loading) {
-      if (username === 'nuomi' && password === 'nuomi') {
--       this.dispatch({
--         type: '_updateState',
--         payload: {
--           loading: true,
--         },
--       });
-+       this.updateState({ loading: true });
-        await requests.login({ username, password });
--       this.dispatch({
--         type: '_updateState',
--         payload: {
--           loading: false,
--         },
--       });
-+       this.updateState({ loading: false });
-      } else {
-        window.alert('账号密码有误');
-      }
+    if (username === 'nuomi' && password === 'nuomi') {
+-     this.dispatch({
+-       type: '_updateState',
+-       payload: {
+-         loading: true,
+-       },
+-     });
++     this.updateState({ loading: true });
+      await requests.login({ username, password });
+-     this.dispatch({
+-       type: '_updateState',
+-       payload: {
+-         loading: false,
+-       },
+-     });
++     this.updateState({ loading: false });
+    } else {
+      window.alert('账号密码有误');
     }
   }
 }
@@ -739,15 +729,13 @@ import requests from '../requests';
 export default {
   async login() {
     const { username, password, loading } = this.getState();
-    if (!loading) {
-      if (username === 'nuomi' && password === 'nuomi') {
-        this.updateState({ loading: true });
-        await requests.login({ username, password });
-        this.updateState({ loading: false });
-+       router.location('/platform');
-      } else {
-        window.alert('账号密码有误');
-      }
+    if (username === 'nuomi' && password === 'nuomi') {
+      this.updateState({ loading: true });
+      await requests.login({ username, password });
+      this.updateState({ loading: false });
++     router.location('/platform');
+    } else {
+      window.alert('账号密码有误');
     }
   }
 }
@@ -813,15 +801,13 @@ export default {
 -   if (!loading) {
 + async $login() {
 +    const { username, password, loadings } = this.getState();
-+   if (!loadings.$login) {
-      if (username === 'nuomi' && password === 'nuomi') {
--       this.updateState({ loading: true });
-        await requests.login({ username, password });
--       this.updateState({ loading: false });
-+       router.location('/platform');
-      } else {
-        window.alert('账号密码有误');
-      }
+    if (username === 'nuomi' && password === 'nuomi') {
+-     this.updateState({ loading: true });
+      await requests.login({ username, password });
+-     this.updateState({ loading: false });
++     router.location('/platform');
+    } else {
+      window.alert('账号密码有误');
     }
   }
 }
