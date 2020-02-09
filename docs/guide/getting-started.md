@@ -137,7 +137,7 @@ import { createRequests } from 'nuomi-request';
 
 export default createRequests(
   {
-    login: "/api/login:post"
+    login: '/api/login:post'
   },
   {
     login: {
@@ -535,7 +535,7 @@ import ReactDOM from 'react-dom';
 - import { Router, Route, Redirect } from 'nuomi';
 + import { Router, Route, NuomiRoute, Redirect } from 'nuomi';
 import login from './login';
-+import platform from './platform';
++ import platform from './platform';
 
 function App() {
   return (
@@ -548,11 +548,13 @@ function App() {
 }
 ...
 ```
-Nuomi 和 NuomiRoute 组件主要用于布局，只是NuomiRoute多了路由相关功能，它并没有 path 属性，而是 pathPrefix ，从字面意思可以看出是路径前缀，其实就是起到了匹配路径的作用，这里定义工作台路由path全部以/platform开头，比如首页是/platform，设置页是/platfrom/setting，否则就无法匹配，基于此原因NuomiRoute不是很方便开发多级嵌套路由的场景，如果你的项目需求是需要多级嵌套路由，那可能nuomi并不适合你。
+Nuomi 和 NuomiRoute 组件主要用于布局，只是NuomiRoute多了路由相关功能，它并没有 path 属性，而是 pathPrefix ，从字面意思可以看出是路径前缀，其实就是起到了匹配路径的作用，这里定义工作台路由path全部以/platform开头，比如首页是/platform，设置页是/platfrom/setting，否则就无法匹配，基于此原因NuomiRoute不是很方便开发多级嵌套路由的场景。
 
 接下来我们来编写工作台模块，因为模块写法和登录模块一样，后面就不会详细介绍，编辑 src/platform/index.js
 ```js
-export * from './layout';
+import layout from './layout';
+
+export default layout;
 ```
 编辑 src/platform/layout/requests/index.js
 ```js
@@ -621,7 +623,7 @@ import Content from '../Content';
 const Layout = () => {
   return (
     <div>
-      <Header>
+      <Header />
       <Sidebar />
       <Content />
     </div>
@@ -646,7 +648,7 @@ export default connect(({ username }) => ({ username }))(Header);
 编辑 src/platform/layout/components/Sidebar/index.jsx
 ```js
 import React from 'react';
-import { Link, connect } from 'nuomi';
+import { Link } from 'nuomi';
 
 const Sidebar = () => {
   const paths = [{
@@ -673,8 +675,8 @@ export default Sidebar;
 ```js
 import React from 'react';
 import { Route, Redirect } from 'nuomi';
-import index from '../../pages/index';
-import setting from '../../pages/setting';
+import index from '../../../pages/index';
+import setting from '../../../pages/setting';
 
 const Content = () => {
   return (
@@ -719,7 +721,7 @@ const Layout = () => {
 export default Layout;
 ```
 
-访问页面，可以看到页面正常跳转，至此工作台基本框架已经搭建完成，具体的业务功能稍后再实现。
+访问页面#/platform，点击首页和设置可以看到页面正常跳转，至此工作台基本框架已经搭建完成，具体的业务功能稍后再实现。
 ### 路由跳转
 还记得登录模块功能吗，功能是要登录后自动跳转到工作台，目前并没有跳转，现在我们来实现它，编辑 src/login/effects/index.js
 ```diff
@@ -740,7 +742,7 @@ export default {
   }
 }
 ```
-[router](/api/#router) 提供了很多路由相关的功能方法，其中location是最常用的方法之一，通过他可以实现跳转、路由刷新、甚至是路由之间的模块通信。
+打开登录页面，输入账号密码后页面成功跳转到工作台。[router](/api/#router) 提供了很多路由相关的功能方法，其中location是最常用的方法之一，通过他可以实现跳转、路由刷新、甚至是路由之间的模块通信。
 
 ### 路由钩子
 吧啦吧啦...
