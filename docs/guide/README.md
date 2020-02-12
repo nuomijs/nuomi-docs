@@ -14,4 +14,4 @@ nuomi 是基于[react](https://reactjs.org/)和[redux](https://redux.js.org/)开
 
 ## 它能做什么？
 
-理论上可以开发任何类型的单页应用，目前尚不支持 SSR（开发中）。
+理论上可以开发任何类型的单页应用，支持服务端渲染。
