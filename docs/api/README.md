@@ -23,6 +23,7 @@
 用于服务器渲染 (<span style="color: green;">0.7.0+</span>)
 |  props   | value  |  介绍  |
 |  ----  | ----  | ---- |
+| location  | '/' | 服务器端获取的url，可以传入对象，包含pathname、search、params |
 | basename  | '/' | 通用路径 |
 | context  | {} | 可以通过context.url获取Redirect组件第一次重定向的url |
 
