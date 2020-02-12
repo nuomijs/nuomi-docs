@@ -15,16 +15,26 @@
 ### Ruoter
 |  props   | value  |  介绍  |
 |  ----  | ----  | ---- |
-| hashPrefix  | '' | hash前缀 |
+| hashPrefix  | '' | hash前缀 (<span style="color: red">0.7.0-</span>) |
+| type  | 'hash' or 'browser' | 路由类型，默认是hash (<span style="color: green">0.7.0+</span>)  |
+| basename  | '/' | 通用路径 (<span style="color: green">0.7.0+</span>) |
+
+### StaticRuoter
+用于服务器渲染 (<span style="color: green;">0.7.0+</span>)
+|  props   | value  |  介绍  |
+|  ----  | ----  | ---- |
+| basename  | '/' | 通用路径 |
+| context  | {} | 可以通过context.url获取Redirect组件第一次重定向的url |
 
 ### NuomiRoute
 |  props   | value  |  介绍  |
 |  ----  | ----  | ---- |
 | pathPrefix  | '' | 路由path前缀，支持字符串和正则，可实现类似子路由功能 |
+
 其他参数同Nuomi组件
 
 ### Route
-|  props   | value  |  介绍  |
+|  props   | value  |  介绍
 |  ----  | ----  | ---- |
 | path  | '' | 路由path，支持动态参数 |
 | location  | {} | 当前匹配的路由数据，内部创建，不可修改，也无需传递 |
@@ -92,6 +102,9 @@ router.location(path, ({ store }) => { // 跳转后更新状态
 // path支持对象，字段等同router.location()获取的对象字段
 router.location({ pathname: '/path', query: { a: 1 } }) // /path?a=1
 ```
+
+#### router.replace
+路由跳转，在history中替换当前地址，参数等同location (<span style="color: green;">0.7.0+</span>)
 
 #### router.listener
 监听路由变化
@@ -165,6 +178,31 @@ nuomi.config({
 获取nuomi组件的store，参数是store id，返回对象包含getState和dispatch
 #### store.applyMiddleware
 添加中间件
+#### store.createState
+全局初始化状态 (<span style="color: green;">0.7.0+</span>)
 ```js
 store.applyMiddleware(thunk, logger, ...)
+```
+## 属性
+### INITIALISE_STATE
+服务端渲染注入到页面中的全局变量名 (<span style="color: green;">0.7.0+</span>)
+```js
+import { createServer } from 'http';
+import { renderToString } from 'react-dom/server';
+import { INITIALISE_STATE } from 'nuomi';
+
+createServer((req, res) => {
+  const html = renderToString(<App />);
+  const state = { global: {} };
+
+  res.setHeader('Content-Type','text/html');
+  res.end(`
+    <html>
+      <body>
+        <div id="root">${html}</div>
+        <script>window.${INITIALISE_STATE}=${JSON.stringify(state)}</script>
+      </body>
+    </html>
+  `);
+});
 ```
