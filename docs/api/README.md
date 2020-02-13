@@ -180,13 +180,13 @@ nuomi.config({
 #### store.applyMiddleware
 添加中间件
 #### store.createState
-全局初始化状态 (<span style="color: green;">0.7.0+</span>)
+初始化状态，只能初始化手动绑定storeId的状态 (<span style="color: green;">0.7.0+</span>)
 ```js
 store.applyMiddleware(thunk, logger, ...)
 ```
 ## 属性
 ### INITIALISE_STATE
-服务端渲染注入到页面中的全局变量名 (<span style="color: green;">0.7.0+</span>)
+服务端渲染时用于给window对象添加初始化状态属性 (<span style="color: green;">0.7.0+</span>)
 ```js
 import { createServer } from 'http';
 import { renderToString } from 'react-dom/server';
