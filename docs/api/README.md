@@ -179,11 +179,12 @@ nuomi.config({
 获取nuomi组件的store，参数是store id，返回对象包含getState和dispatch
 #### store.applyMiddleware
 添加中间件
-#### store.createState
-初始化状态，只能初始化手动绑定storeId的状态 (<span style="color: green;">0.7.0+</span>)
 ```js
 store.applyMiddleware(thunk, logger, ...)
 ```
+#### store.createState
+初始化状态，只能初始化手动绑定storeId的状态 (<span style="color: green;">0.7.0+</span>)
+
 ## 属性
 ### INITIALISE_STATE
 服务端渲染时用于给window对象添加初始化状态属性 (<span style="color: green;">0.7.0+</span>)
