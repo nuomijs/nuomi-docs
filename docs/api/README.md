@@ -30,7 +30,29 @@
 ### NuomiRoute
 |  props   | value  |  介绍  |
 |  ----  | ----  | ---- |
-| pathPrefix  | '' | 路由path前缀，支持字符串和正则，可实现类似子路由功能 |
+| pathPrefix  | '' | 路由path前缀，支持字符串和正则 |
+| path  | '' | 匹配path，优先级高于pathPrefix (<span style="color: green;">0.8.0+</span>) |
+
+### ShapeRoute
+可视化设置路由 (<span style="color: green;">0.8.0+</span>)
+|  props   | value  |  介绍  |
+|  ----  | ----  | ---- |
+| routes  | array | 由Route/NuomiRoute/Redirect props组成的数组集合，子路由设置在children属性上，支持组件和数组 |
+```js
+// 子路由path不用把祖先path加上
+const routes = [{
+  path: '/',
+  children: [{
+    path: '/home',
+    children: [{
+      path: '/list',
+    }]
+  }]
+}];
+<Router type="hash">
+  <ShapeRoute routes={routes} />
+</Router>
+```
 
 其他参数同Nuomi组件
 
@@ -39,7 +61,8 @@
 |  ----  | ----  | ---- |
 | path  | '' | 路由path，支持动态参数 |
 | location  | {} | 当前匹配的路由数据，内部创建，不可修改，也无需传递 |
-| wrapper  | false | 是否给留有创建一个div容器，可实现缓存功能 |
+| wrapper  | false | 是否给留有创建一个div容器，可实现缓存功能  (<span style="color: red;">0.8.0-</span>) |
+| cache  | false | 是否给留有创建一个div容器，可实现缓存功能  (<span style="color: green;">0.8.0+</span>) |
 | reload  | false | 匹配路由后是否重置状态 |
 | onEnter  | function | 路由匹配后，在reducer被创建之前回调，返回false将无法展示内容，参数为强制展示回调，调用后可以展示内容 |
 | onChange  | function | 路由匹配时回调，支持函数和对象 |
@@ -58,8 +81,20 @@
 ### Link
 |  props   | value  |  介绍  |
 |  ----  | ----  | ---- |
-| to  | '' | 跳转后的路由path |
+| to  | '' | 目标path |
+| data  | {} | 传递的数据 (<span style="color: green;">0.8.0+</span>) |
+| replace  | false | 跳转是否替换当前history (<span style="color: green;">0.8.0+</span>) |
 | reload  | false | 跳转后是否重置状态 |
+
+### NavLink
+可以匹配path的Link (<span style="color: green;">0.8.0+</span>)
+|  props   | value  |  介绍  |
+|  ----  | ----  | ---- |
+| path  | '' | 匹配path |
+| activeClassName  | '' | 匹配className |
+| activeStyle  | null | 匹配样式 |
+| isActice  | function | 自定义匹配，返回boolean，第一个参数是匹配结果，第二个参数是当前location对象 |
+其他参数参考Link
 
 ### connect
 用法同react-redux connect，区别是获取状态的函数，第一个参数是获取当前模块的状态，第二个参数是获取全部store里的状态
@@ -129,6 +164,21 @@ router.location({ pathname: '/path', query: { a: 1 } }) // /path?a=1
 |  ----  | ----  | ---- |
 | location  | {} | 路由location对象 |
 | path  | '' | 路由设置的path |
+
+#### router.mergePath
+合并path (<span style="color: green;">0.8.0+</span>)
+|  参数   | value  |  介绍  |
+|  ----  | ----  | ---- |
+| path1, path2, ...  | string | 路由path |
+
+#### router.block
+定义阻塞路由，接收一个回调函数作为参数，回调函数包含下面参数，返回false则不能跳转 (<span style="color: green;">0.8.0+</span>)
+|  参数   | value  |  介绍  |
+|  ----  | ----  | ---- |
+| from  | {} | 当前location |
+| to  | {} | 目标location |
+| enter  | function | 确认跳转函数，在异步中使用 |
+
 
 ### nuomi
 
