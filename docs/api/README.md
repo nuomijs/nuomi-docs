@@ -63,7 +63,7 @@ const routes = [{
 | location  | {} | 当前匹配的路由数据，内部创建，不可修改，也无需传递 |
 | wrapper  | false | 是否给留有创建一个div容器，可实现缓存功能  (<span style="color: red;">0.8.0-</span>) |
 | cache  | false | 是否给留有创建一个div容器，可实现缓存功能  (<span style="color: green;">0.8.0+</span>) |
-| reload  | false | 匹配路由后是否重置状态 |
+| reload  | false | 匹配路由后是否重置状态，值为null则不法刷新 |
 | onEnter  | function | 路由匹配后，在reducer被创建之前回调，返回false将无法展示内容，参数为强制展示回调，调用后可以展示内容 |
 | onChange  | function | 路由匹配时回调，支持函数和对象 |
 | onLeave  | function | 路由离开时回调，用于决定是否可以离开 |
