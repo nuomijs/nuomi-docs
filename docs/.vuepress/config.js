@@ -1,6 +1,6 @@
 module.exports = {
   title: 'NuomiJS',
-  description: 'nuomi是基于react和redux开发的一套数据流解决方案，也可以看成轻量级业务框架，它可以规范和简化使用redux进行状态管理的开发流程，与路由完美结合可以更高效开发单页应用。',
+  description: 'React + Redux + Router最佳实践',
   head: [
     // 网站图标
     ['link', { rel: 'icon', href: '/images/logo.png' }],
