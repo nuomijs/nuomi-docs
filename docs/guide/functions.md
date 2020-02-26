@@ -350,7 +350,7 @@ const App = () => {
 };
 ```
 
-通过使用 `window.location` 和 `window.replace`，可以控制浏览器的跳转，路由提供与之对等的方法
+通过使用 `window.location` 和 `location.replace`，可以控制浏览器的跳转，路由提供与之对等的方法
 `router.location` 与 `router.replace`，它们参数相同，只不过前者会记入历史，后者替换历史。
 
 ```js
