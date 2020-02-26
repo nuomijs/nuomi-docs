@@ -25,8 +25,10 @@ module.exports = {
           collapsable: false,
           children: [
             ['', '介绍'],
-            'getting-started',
-            'community',
+            'quick-start',
+            'functions',
+            // 'concepts',
+            'examples',
           ]
         },
       ],

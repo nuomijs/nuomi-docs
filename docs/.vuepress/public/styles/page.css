@@ -24,3 +24,7 @@
 code .token.inserted {
   color: #07bf07 !important;
 }
+
+.tip.custom-block {
+  border-color: #fd6e0e !important;
+}

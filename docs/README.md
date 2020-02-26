@@ -1,14 +1,14 @@
 ---
 home: true
 actionText: 快速上手 →
-actionLink: /guide/
+actionLink: /guide/quick-start.html
 features:
-- title: 精简
-  details: 不依赖任何中间件，通过原生async await即可实现异步状态管理，自研路由使用简单概念少。
+- title: 易用
+  details: 不依赖任何中间件，通过原生 async await 即可实现异步状态管理。
+- title: 简便
+  details: 状态操作简单方便，自动 loading 处理简化流程提升开发体验。
 - title: 高效
-  details: 无需在使用redux时绞尽脑汁命名与大量的switch case，无需在异步请求时手动控制loading状态。
-- title: 规范
-  details: 扁平化结构组织你的代码，简洁规范的同时，也方便复用。
+  details: 内置路由系统功能齐全，与 redux 完美结合提升单页开发效率。
 footer: MIT Licensed | Copyright © 2019-present
 ---
 

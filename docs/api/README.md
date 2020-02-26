@@ -69,7 +69,7 @@ const routes = [{
 | onLeave  | function | 路由离开时回调，用于决定是否可以离开 |
 其他参数同Nuomi组件，
 回调的执行顺序是 onEnter > location.data > onChange > onInit，location.data下面路由跳转时会讲到
-<br><b>注意：path和wrapper不能异步加载</b>
+<br><b>注意：path和cache不能异步加载</b>
 
 ### Redirect
 |  props   | value  |  介绍  |
@@ -101,6 +101,14 @@ const routes = [{
 
 ### withNuomi
 使用后组件中提供nuomiProps属性，nuomiProps指向Nuomi/NuomiRoute/Route组件的props
+
+```js
+const List = ({ nuomiProps }) => {
+  // do something
+}
+
+withNuomi(List);
+```
 
 ## Hooks
 ### useConnect
@@ -233,7 +241,7 @@ nuomi.config({
 store.applyMiddleware(thunk, logger, ...)
 ```
 #### store.createState
-初始化状态，只能初始化手动绑定storeId的状态 (<span style="color: green;">0.7.0+</span>)
+初始化状态，只能对 `nuomiPorps` 中设置了 `id` 属性的模块初始化 (<span style="color: green;">0.7.0+</span>)
 
 ## 属性
 ### INITIALISE_STATE
