@@ -2,8 +2,8 @@
 
 ## 状态隔离
 
-框架为每个 `nuomiProps` 模块内部创建一个 `store` 对象，包含了 `getState` 和 `dispatch` 方法用于管理模块内的状态，可以在
-`nuomiProps` 中的方法内调用 `this.store` 去访问它们。
+框架为每个 `nuomiProps` 模块内部创建一个 `store` 对象，包含了 `getState` 和 `dispatch`
+方法用于操作模块内的状态，可以在 `nuomiProps` 对象的方法内调用 `this.store` 去访问它们。
 
 ```js
 {
@@ -32,8 +32,8 @@ connect(state => state)(App);
 ```
 
 可以在 `nuomiProps` 中通过 `id` 属性为 `store` 设置唯一标识，`id` 其实就是这个 `key`
-，只不过在不声明的情况下会动态创建。如果模块之间是没有任何联系，没必要给他们设置标识，因为操作状态不需要依赖 `id`
-。当需要与其他模块通信时，为了方便，那就需要为其设置 `id` 了。
+，只不过在不声明的情况下会动态创建。如果模块之间是没有任何联系，没必要给他们设置标识，因为操作状态不需要依赖
+`id` 。当需要与其他模块通信时，为了方便，那就需要为其设置 `id` 了。
 
 ```js
 {
@@ -43,8 +43,8 @@ connect(state => state)(App);
 
 ## 状态操作
 
-在组件中可以通过 `useConnect` 或者 `connect` 高阶组件让组件与 `nuomiProps` 建立关联来获取状态，通过 `dispatch` 可以调用
-`effects` 和 `reducers` 中的方法更新状态。
+在组件中可以通过 `useConnect` 或者 `connect` 高阶组件让组件与 `nuomiProps` 建立关联来获取状态，通过
+`dispatch` 可以调用 `effects` 和 `reducers` 中的方法更新状态。
 
 ```js
 {
@@ -105,7 +105,9 @@ store.dispatch({
 
 ## 异步操作
 
-异步操作是指异步更新状态，定义在 `effects` 对象中，主要用于业务逻辑的处理，使用 `async await` 语法糖。组件中调用 `dispatch` 访问 `effects` 中定义的方法，异步结束后再调用 `reducers` 中定义的方法来更新状态，推荐使用 [nuomi-request](https://github.com/nuomijs/nuomi-request/wiki) 来进行请求操作。
+异步操作是指异步更新状态，定义在 `effects` 对象中，主要用于业务逻辑的处理，使用
+`async await` 语法糖。组件中调用 `dispatch` 访问 `effects` 中定义的方法，异步结束后再调用
+`reducers` 中定义的方法来更新状态，推荐使用 [nuomi-request](https://github.com/nuomijs/nuomi-request/wiki) 来进行请求操作。
 
 ```js
 {
@@ -123,7 +125,9 @@ store.dispatch({
 }
 ```
 
-上面代码中 `getState` 和 `dispatch` 为内置方法，`getState` 可以获取当前模块最新状态，`dispatch` 用于调用 `reducers` 中的方法更新状态，除此之外还可以通过 `this.getNuomiProps()` 来访问当前模块的 `nuomiProps` 对象。
+上面代码中 `getState` 和 `dispatch` 为内置方法，`getState` 可以获取当前模块最新状态，
+`dispatch` 用于调用 `reducers` 中的方法更新状态，除此之外还可以通过 `this.getNuomiProps()`
+来访问当前模块的 `nuomiProps` 对象。
 
 异步方法也可以与其他方法组合使用，通过 `this` 访问。
 
@@ -457,7 +461,8 @@ const A = () => {
 
 ## 路由嵌套
 
-可以使用 `Route` 与 `NuomiRoute` 实现路由嵌套的功能，外层路由使用哪个都可以，后者功能会少一点。路由嵌套最常见的应用场景就是工作台页面，外层路由渲染框架，子路由渲染内容，有2种方式可以实现路由嵌套。
+可以使用 `Route` 与 `NuomiRoute` 实现路由嵌套的功能，外层路由使用哪个都可以，后者功能会少一点。
+路由嵌套最常见的应用场景就是工作台页面，外层路由渲染框架，子路由渲染内容，有2种方式可以实现路由嵌套。
 
 ***集中式***
 
@@ -492,7 +497,8 @@ const App = () => {
 }
 ```
 
-外层路由在 `render` 方法中 通过 `this.children` 获取子路由，然后在组件内进行渲染，如果不处理这一步，那么子路由不会被渲染。框架提供了 `ShapeRoute` 组件处理这种方式更加方便。
+外层路由在 `render` 方法中 通过 `this.children` 获取子路由，然后在组件内进行渲染，如果不处理这一步，
+那么子路由不会被渲染。框架提供了 `ShapeRoute` 组件处理这种方式更加方便。
 
 :::tip
 children 与 render 共存时，只渲染 render 中的组件。<br>
@@ -574,9 +580,9 @@ const App = () => {
 }
 ```
 
-通常路由被渲染后，需要调用接口对数据进行初始化，这个操作可以在组件生命周期函数内进行，比如 `useEffect` `componentDidMount`
-等，但是在框架中使用这种方式会有一些问题，比如调用路由刷新 不会重新执行这些函数，所以路由提供了 `onInit` 进行初始化操作，它不是路由独有的，
-`Nuomi` 和 `NuomiRoute` 组件都有这个钩子，功能相同。
+通常路由被渲染后，需要调用接口对数据进行初始化，这个操作可以在组件生命周期函数内进行，比如 `useEffect`
+`componentDidMount`等，但是在框架中使用这种方式会有一些问题，比如调用路由刷新 不会重新执行这些函数，所以路由提供了
+`onInit` 进行初始化操作，它不是路由独有的，`Nuomi` 和 `NuomiRoute` 组件都有这个钩子，功能相同。
 
 ```js
 {
